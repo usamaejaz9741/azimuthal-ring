@@ -5,6 +5,7 @@ This module contains unit tests for all Telegram command and message handlers.
 
 import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
+from telegram.constants import ChatAction
 from handlers import (
     start, note_cmd, list_notes, task_cmd, list_tasks,
     complete_task_cmd, delete_task_cmd, remind_cmd, search_cmd,
@@ -362,6 +363,10 @@ async def test_chat_handler(mock_update, mock_context):
     with patch('handlers.llm_service.generate', return_value="AI Response") as mock_gen:
         await chat_handler(mock_update, mock_context)
         mock_gen.assert_called_with("Hello AI")
+        mock_context.bot.send_chat_action.assert_called_with(
+            chat_id=mock_update.effective_chat.id,
+            action=ChatAction.TYPING
+        )
         mock_update.message.reply_text.assert_called_with("AI Response")
 
 @pytest.mark.asyncio

@@ -40,4 +40,5 @@ def mock_context():
     context.application = MagicMock(spec=Application)
     context.bot = MagicMock()
     context.bot.edit_message_text = AsyncMock()
+    context.bot.send_chat_action = AsyncMock()
     return context

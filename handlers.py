@@ -6,6 +6,7 @@ web search, and AI-powered chat.
 """
 
 from telegram import Update
+from telegram.constants import ChatAction
 from telegram.ext import ContextTypes
 import database
 from llm import llm_service
@@ -239,5 +240,6 @@ async def chat_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if text:
         # Check if the text is short enough to be a task without command 
         # (optional deterministic logic)
+        await context.bot.send_chat_action(chat_id=update.effective_chat.id, action=ChatAction.TYPING)
         response = llm_service.generate(text)
         await update.message.reply_text(response)
