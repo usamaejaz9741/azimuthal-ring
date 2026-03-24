@@ -146,10 +146,24 @@ async def test_complete_task_cmd_success(mock_update, mock_context):
         mock_context: Mocked Telegram Context object.
     """
     mock_context.args = ["1"]
-    with patch('database.complete_task') as mock_complete_task:
+    with patch('database.complete_task', return_value=True) as mock_complete_task:
         await complete_task_cmd(mock_update, mock_context)
         mock_complete_task.assert_called_with(1)
         mock_update.message.reply_text.assert_called_with("✅ Task marked as done.")
+
+@pytest.mark.asyncio
+async def test_complete_task_cmd_not_found(mock_update, mock_context):
+    """Test the /done handler with a task ID that doesn't exist.
+
+    Args:
+        mock_update: Mocked Telegram Update object.
+        mock_context: Mocked Telegram Context object.
+    """
+    mock_context.args = ["999"]
+    with patch('database.complete_task', return_value=False) as mock_complete_task:
+        await complete_task_cmd(mock_update, mock_context)
+        mock_complete_task.assert_called_with(999)
+        mock_update.message.reply_text.assert_called_with("❌ Task not found or already completed.")
 
 @pytest.mark.asyncio
 async def test_complete_task_cmd_invalid(mock_update, mock_context):
@@ -184,23 +198,36 @@ async def test_delete_task_cmd_success(mock_update, mock_context):
         mock_context: Mocked Telegram Context object.
     """
     mock_context.args = ["1"]
-    with patch('database.delete_task') as mock_delete_task:
+    with patch('database.delete_task', return_value=True) as mock_delete_task:
         await delete_task_cmd(mock_update, mock_context)
         mock_delete_task.assert_called_with(1)
         mock_update.message.reply_text.assert_called_with("🗑 Task deleted.")
 
 @pytest.mark.asyncio
-async def test_delete_task_cmd_error(mock_update, mock_context):
-    """Test the /delete handler when a database error occurs.
+async def test_delete_task_cmd_not_found(mock_update, mock_context):
+    """Test the /delete handler with a task ID that doesn't exist.
 
     Args:
         mock_update: Mocked Telegram Update object.
         mock_context: Mocked Telegram Context object.
     """
-    mock_context.args = ["1"]
-    with patch('database.delete_task', side_effect=Exception("DB Error")):
+    mock_context.args = ["999"]
+    with patch('database.delete_task', return_value=False) as mock_delete_task:
         await delete_task_cmd(mock_update, mock_context)
-        mock_update.message.reply_text.assert_called_with("❌ Error deleting task.")
+        mock_delete_task.assert_called_with(999)
+        mock_update.message.reply_text.assert_called_with("❌ Task not found.")
+
+@pytest.mark.asyncio
+async def test_delete_task_cmd_error(mock_update, mock_context):
+    """Test the /delete handler when an unexpected error occurs.
+
+    Args:
+        mock_update: Mocked Telegram Update object.
+        mock_context: Mocked Telegram Context object.
+    """
+    mock_context.args = ["abc"]
+    await delete_task_cmd(mock_update, mock_context)
+    mock_update.message.reply_text.assert_called_with("❌ Invalid ID.")
 
 @pytest.mark.asyncio
 async def test_remind_cmd_no_args(mock_update, mock_context):

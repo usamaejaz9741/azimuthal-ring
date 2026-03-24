@@ -93,11 +93,16 @@ def complete_task(task_id: int):
 
     Args:
         task_id (int): The unique ID of the task to be marked as done.
+
+    Returns:
+        bool: True if a task was updated, False otherwise.
     """
     conn = get_db()
-    conn.execute("UPDATE tasks SET status = 'done' WHERE id = ?", (task_id,))
+    cursor = conn.execute("UPDATE tasks SET status = 'done' WHERE id = ? AND status = 'open'", (task_id,))
+    updated = cursor.rowcount > 0
     conn.commit()
     conn.close()
+    return updated
 
 
 def delete_task(task_id: int):
@@ -105,11 +110,16 @@ def delete_task(task_id: int):
 
     Args:
         task_id (int): The unique ID of the task to be deleted.
+
+    Returns:
+        bool: True if a task was deleted, False otherwise.
     """
     conn = get_db()
-    conn.execute("DELETE FROM tasks WHERE id = ?", (task_id,))
+    cursor = conn.execute("DELETE FROM tasks WHERE id = ?", (task_id,))
+    deleted = cursor.rowcount > 0
     conn.commit()
     conn.close()
+    return deleted
 
 
 def set_memory(key: str, value: str):
