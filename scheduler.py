@@ -28,6 +28,9 @@ def init_scheduler(bot_instance):
 
     Args:
         bot_instance: The python-telegram-bot instance used to send messages.
+
+    Returns:
+        None
     """
     global _bot_instance, _loop
     _bot_instance = bot_instance
@@ -47,6 +50,9 @@ async def send_reminder_async(bot, chat_id, message):
         bot: The bot instance to use for sending the message.
         chat_id (int/str): The unique identifier for the target chat.
         message (str): The reminder text to be sent.
+
+    Returns:
+        None
     """
     await bot.send_message(chat_id=chat_id, text=f"🔔 REMINDER: {message}")
 
@@ -60,6 +66,9 @@ def trigger_reminder(chat_id, message):
     Args:
         chat_id (int/str): The unique identifier for the target chat.
         message (str): The reminder text to be sent.
+
+    Returns:
+        None
     """
     if _bot_instance is None:
         print("Error: Bot instance not initialized in scheduler.")
@@ -83,6 +92,9 @@ def schedule_reminder(bot_app, chat_id, message, delay_seconds):
         chat_id (int/str): The unique identifier for the target chat.
         message (str): The reminder text.
         delay_seconds (int): The number of seconds to wait before triggering.
+
+    Returns:
+        None
     """
     # Ensure the bot instance and loop are stored (for when it might not have been via init_scheduler)
     global _bot_instance, _loop
@@ -105,12 +117,20 @@ def schedule_reminder(bot_app, chat_id, message, delay_seconds):
 
 
 def start_scheduler():
-    """Start the background scheduler if it is not already running."""
+    """Start the background scheduler if it is not already running.
+
+    Returns:
+        None
+    """
     if not scheduler.running:
         scheduler.start()
 
 
 def stop_scheduler():
-    """Shut down the background scheduler if it is currently running."""
+    """Shut down the background scheduler if it is currently running.
+
+    Returns:
+        None
+    """
     if scheduler.running:
         scheduler.shutdown()

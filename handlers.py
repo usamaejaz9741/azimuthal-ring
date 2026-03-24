@@ -24,6 +24,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     Args:
         update (Update): The update object containing information about the incoming message.
         context (ContextTypes.DEFAULT_TYPE): The context object for the handler.
+
+    Returns:
+        None
     """
     await update.message.reply_text(get_help_text(), parse_mode='Markdown')
 
@@ -37,6 +40,9 @@ async def note_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     Args:
         update (Update): The update object containing information about the incoming message.
         context (ContextTypes.DEFAULT_TYPE): The context object for the handler.
+
+    Returns:
+        None
     """
     if not context.args:
         return await update.message.reply_text("Usage: /note <content>")
@@ -54,6 +60,9 @@ async def list_notes(update: Update, context: ContextTypes.DEFAULT_TYPE):
     Args:
         update (Update): The update object containing information about the incoming message.
         context (ContextTypes.DEFAULT_TYPE): The context object for the handler.
+
+    Returns:
+        None
     """
     notes = database.get_notes()
     if not notes:
@@ -71,6 +80,9 @@ async def task_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     Args:
         update (Update): The update object containing information about the incoming message.
         context (ContextTypes.DEFAULT_TYPE): The context object for the handler.
+
+    Returns:
+        None
     """
     if not context.args:
         return await update.message.reply_text("Usage: /task <content>")
@@ -88,6 +100,9 @@ async def list_tasks(update: Update, context: ContextTypes.DEFAULT_TYPE):
     Args:
         update (Update): The update object containing information about the incoming message.
         context (ContextTypes.DEFAULT_TYPE): The context object for the handler.
+
+    Returns:
+        None
     """
     tasks = database.get_tasks()
     if not tasks:
@@ -105,6 +120,9 @@ async def complete_task_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     Args:
         update (Update): The update object containing information about the incoming message.
         context (ContextTypes.DEFAULT_TYPE): The context object for the handler.
+
+    Returns:
+        None
     """
     if not context.args:
         return await update.message.reply_text("Usage: /done <task_id>")
@@ -127,6 +145,9 @@ async def delete_task_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     Args:
         update (Update): The update object containing information about the incoming message.
         context (ContextTypes.DEFAULT_TYPE): The context object for the handler.
+
+    Returns:
+        None
     """
     if not context.args:
         return await update.message.reply_text("Usage: /delete <task_id>")
@@ -149,6 +170,9 @@ async def remind_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     Args:
         update (Update): The update object containing information about the incoming message.
         context (ContextTypes.DEFAULT_TYPE): The context object for the handler.
+
+    Returns:
+        None
     """
     if len(context.args) < 2:
         return await update.message.reply_text("Usage: /remind 10 Remind me about milk")
@@ -171,6 +195,9 @@ async def search_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     Args:
         update (Update): The update object containing information about the incoming message.
         context (ContextTypes.DEFAULT_TYPE): The context object for the handler.
+
+    Returns:
+        None
     """
     if not context.args:
         return await update.message.reply_text("Usage: /search <query>")
@@ -199,6 +226,9 @@ async def memory_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     Args:
         update (Update): The update object containing information about the incoming message.
         context (ContextTypes.DEFAULT_TYPE): The context object for the handler.
+
+    Returns:
+        None
     """
     if len(context.args) < 2:
         return await update.message.reply_text("Usage: /memory nickname usama")
@@ -217,6 +247,9 @@ async def list_memories(update: Update, context: ContextTypes.DEFAULT_TYPE):
     Args:
         update (Update): The update object containing information about the incoming message.
         context (ContextTypes.DEFAULT_TYPE): The context object for the handler.
+
+    Returns:
+        None
     """
     memories = database.get_memory()
     if not memories:
@@ -234,6 +267,9 @@ async def chat_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     Args:
         update (Update): The update object containing information about the incoming message.
         context (ContextTypes.DEFAULT_TYPE): The context object for the handler.
+
+    Returns:
+        None
     """
     # Pass to LLM
     text = update.message.text

@@ -7,7 +7,15 @@ from utils import restricted
 
 @pytest.mark.asyncio
 async def test_restricted_decorator_allowed(mock_update, mock_context):
-    """Test that the restricted decorator allows access when IDs match."""
+    """Test that the restricted decorator allows access when IDs match.
+
+    Args:
+        mock_update: Mocked Telegram Update object.
+        mock_context: Mocked Telegram Context object.
+
+    Returns:
+        None
+    """
     mock_handler = AsyncMock()
     decorated_handler = restricted(mock_handler)
 
@@ -18,7 +26,15 @@ async def test_restricted_decorator_allowed(mock_update, mock_context):
 
 @pytest.mark.asyncio
 async def test_restricted_decorator_denied(mock_update, mock_context):
-    """Test that the restricted decorator denies access when IDs don't match."""
+    """Test that the restricted decorator denies access when IDs don't match.
+
+    Args:
+        mock_update: Mocked Telegram Update object.
+        mock_context: Mocked Telegram Context object.
+
+    Returns:
+        None
+    """
     mock_handler = AsyncMock()
     decorated_handler = restricted(mock_handler)
 
@@ -29,7 +45,15 @@ async def test_restricted_decorator_denied(mock_update, mock_context):
 
 @pytest.mark.asyncio
 async def test_restricted_decorator_no_restriction(mock_update, mock_context):
-    """Test that the restricted decorator allows access when AUTHORIZED_USER_ID is not set."""
+    """Test that the restricted decorator allows access when AUTHORIZED_USER_ID is not set.
+
+    Args:
+        mock_update: Mocked Telegram Update object.
+        mock_context: Mocked Telegram Context object.
+
+    Returns:
+        None
+    """
     mock_handler = AsyncMock()
     decorated_handler = restricted(mock_handler)
 

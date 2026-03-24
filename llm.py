@@ -16,6 +16,10 @@ class TinyLLM:
 
     This class handles loading the model and provides methods for generating
     text and summarizing content.
+
+    Attributes:
+        _instance (TinyLLM): The singleton instance of the class.
+        model (Llama): The loaded Llama model instance or None if not loaded.
     """
     _instance = None
 
@@ -37,6 +41,12 @@ class TinyLLM:
 
         If the model file is not found or fails to load, the model attribute
         will be set to None.
+
+        Args:
+            None
+
+        Returns:
+            None
         """
         if not os.path.exists(MODEL_PATH):
             print(f"Warning: Model file {MODEL_PATH} not found. LLM disabled.")

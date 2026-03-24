@@ -20,8 +20,8 @@ def test_db(tmp_path):
     Args:
         tmp_path (pathlib.Path): A temporary directory path provided by pytest.
 
-    Yields:
-        str: The path to the temporary database file.
+    Returns:
+        Generator[str, None, None]: A generator yielding the path to the temporary database file.
     """
     db_file = tmp_path / "test_assistant.db"
     # Overwrite DB_PATH in BOTH config and database modules
@@ -57,6 +57,9 @@ def test_tasks(test_db):
 
     Args:
         test_db (str): The path to the temporary test database.
+
+    Returns:
+        None
     """
     add_task("Task 1")
     add_task("Task 2")
@@ -77,6 +80,9 @@ def test_memory(test_db):
 
     Args:
         test_db (str): The path to the temporary test database.
+
+    Returns:
+        None
     """
     set_memory("name", "Jules")
     set_memory("city", "Paris")

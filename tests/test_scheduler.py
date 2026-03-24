@@ -15,8 +15,11 @@ from asyncio import AbstractEventLoop
 def reset_scheduler_state():
     """Fixture to reset the scheduler state and mock the scheduler instance.
 
-    Yields:
-        MagicMock: A mocked APScheduler instance.
+    Args:
+        None
+
+    Returns:
+        Generator[MagicMock, None, None]: A generator yielding a mocked APScheduler instance.
     """
     scheduler._bot_instance = None
     scheduler._loop = None
@@ -27,7 +30,11 @@ def reset_scheduler_state():
 
 @pytest.mark.asyncio
 async def test_send_reminder_async():
-    """Test the asynchronous send_reminder_async function."""
+    """Test the asynchronous send_reminder_async function.
+
+    Returns:
+        None
+    """
     mock_bot = AsyncMock()
     await send_reminder_async(mock_bot, 12345, "Test msg")
     mock_bot.send_message.assert_called_with(chat_id=12345, text="🔔 REMINDER: Test msg")
@@ -38,6 +45,9 @@ async def test_init_scheduler(reset_scheduler_state):
 
     Args:
         reset_scheduler_state: Mocked scheduler fixture.
+
+    Returns:
+        None
     """
     mock_bot = MagicMock()
     init_scheduler(mock_bot)
@@ -47,7 +57,14 @@ async def test_init_scheduler(reset_scheduler_state):
 
 @pytest.mark.asyncio
 async def test_init_scheduler_no_loop(reset_scheduler_state):
-    """Test init_scheduler when no event loop is running."""
+    """Test init_scheduler when no event loop is running.
+
+    Args:
+        reset_scheduler_state: Mocked scheduler fixture.
+
+    Returns:
+        None
+    """
     mock_bot = MagicMock()
     with patch('asyncio.get_running_loop', side_effect=RuntimeError("No loop")):
         init_scheduler(mock_bot)
@@ -59,6 +76,9 @@ async def test_schedule_reminder(reset_scheduler_state):
 
     Args:
         reset_scheduler_state: Mocked scheduler fixture.
+
+    Returns:
+        None
     """
     mock_app = MagicMock()
     mock_app.bot = MagicMock()
@@ -76,7 +96,14 @@ async def test_schedule_reminder(reset_scheduler_state):
 
 @pytest.mark.asyncio
 async def test_schedule_reminder_no_loop(reset_scheduler_state):
-    """Test schedule_reminder when no event loop is running."""
+    """Test schedule_reminder when no event loop is running.
+
+    Args:
+        reset_scheduler_state: Mocked scheduler fixture.
+
+    Returns:
+        None
+    """
     mock_app = MagicMock()
     mock_app.bot = MagicMock()
     with patch('asyncio.get_running_loop', side_effect=RuntimeError("No loop")):
@@ -88,6 +115,9 @@ def test_start_stop_scheduler(reset_scheduler_state):
 
     Args:
         reset_scheduler_state: Mocked scheduler fixture.
+
+    Returns:
+        None
     """
     reset_scheduler_state.running = False
     start_scheduler()
@@ -98,13 +128,21 @@ def test_start_stop_scheduler(reset_scheduler_state):
     reset_scheduler_state.shutdown.assert_called_once()
 
 def test_trigger_reminder_no_bot():
-    """Test trigger_reminder when the bot instance is not initialized."""
+    """Test trigger_reminder when the bot instance is not initialized.
+
+    Returns:
+        None
+    """
     with patch('builtins.print') as mock_print:
         trigger_reminder(12345, "msg")
         mock_print.assert_called_with("Error: Bot instance not initialized in scheduler.")
 
 def test_trigger_reminder_success():
-    """Test trigger_reminder when it successfully schedules a reminder."""
+    """Test trigger_reminder when it successfully schedules a reminder.
+
+    Returns:
+        None
+    """
     mock_bot = MagicMock()
     scheduler._bot_instance = mock_bot
     mock_loop = MagicMock()
@@ -119,7 +157,11 @@ def test_trigger_reminder_success():
         assert args[1] == mock_loop
 
 def test_trigger_reminder_no_loop():
-    """Test trigger_reminder when the event loop is not initialized."""
+    """Test trigger_reminder when the event loop is not initialized.
+
+    Returns:
+        None
+    """
     mock_bot = MagicMock()
     scheduler._bot_instance = mock_bot
     scheduler._loop = None

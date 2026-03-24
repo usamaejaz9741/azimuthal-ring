@@ -13,6 +13,9 @@ from config import DB_PATH
 def get_db():
     """Establish a connection to the SQLite database with synchronous tuning.
 
+    Args:
+        None
+
     Returns:
         sqlite3.Connection: A SQLite connection object with Row factory set.
     """
@@ -29,6 +32,12 @@ def init_db():
 
     This function reads the SQL commands from schema.sql and executes them
     on the current database to create the necessary tables.
+
+    Args:
+        None
+
+    Returns:
+        None
     """
     schema_path = os.path.join(os.path.dirname(__file__), 'schema.sql')
     with open(schema_path, 'r') as f:
@@ -46,6 +55,9 @@ def add_note(content: str):
 
     Args:
         content (str): The text content of the note to be added.
+
+    Returns:
+        None
     """
     conn = get_db()
     conn.execute("INSERT INTO notes (content) VALUES (?)", (content,))
@@ -55,6 +67,9 @@ def add_note(content: str):
 
 def get_notes():
     """Retrieve the 10 most recent notes from the database.
+
+    Args:
+        None
 
     Returns:
         list[sqlite3.Row]: A list of rows containing the note information.
@@ -70,6 +85,9 @@ def add_task(text: str):
 
     Args:
         text (str): The text description of the task.
+
+    Returns:
+        None
     """
     conn = get_db()
     conn.execute("INSERT INTO tasks (text) VALUES (?)", (text,))
@@ -79,6 +97,9 @@ def add_task(text: str):
 
 def get_tasks():
     """Retrieve all open tasks from the database.
+
+    Args:
+        None
 
     Returns:
         list[sqlite3.Row]: A list of rows containing open tasks.
@@ -129,6 +150,9 @@ def set_memory(key: str, value: str):
     Args:
         key (str): The key representing the fact's name.
         value (str): The value containing the fact's details.
+
+    Returns:
+        None
     """
     conn = get_db()
     conn.execute("INSERT OR REPLACE INTO memory (key, value) VALUES (?, ?)", (key, value))
@@ -138,6 +162,9 @@ def set_memory(key: str, value: str):
 
 def get_memory():
     """Retrieve all stored memories from the database.
+
+    Args:
+        None
 
     Returns:
         list[sqlite3.Row]: A list of rows containing all key-value memories.
