@@ -102,9 +102,12 @@ async def complete_task_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not context.args:
         return await update.message.reply_text("Usage: /done <task_id>")
     try:
-        database.complete_task(int(context.args[0]))
-        await update.message.reply_text("✅ Task marked as done.")
-    except:
+        success = database.complete_task(int(context.args[0]))
+        if success:
+            await update.message.reply_text("✅ Task marked as done.")
+        else:
+            await update.message.reply_text("❌ Task not found or already completed.")
+    except (ValueError, IndexError):
         await update.message.reply_text("❌ Invalid ID.")
 
 
@@ -120,10 +123,13 @@ async def delete_task_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not context.args:
         return await update.message.reply_text("Usage: /delete <task_id>")
     try:
-        database.delete_task(int(context.args[0]))
-        await update.message.reply_text("🗑 Task deleted.")
-    except:
-        await update.message.reply_text("❌ Error deleting task.")
+        success = database.delete_task(int(context.args[0]))
+        if success:
+            await update.message.reply_text("🗑 Task deleted.")
+        else:
+            await update.message.reply_text("❌ Task not found.")
+    except (ValueError, IndexError):
+        await update.message.reply_text("❌ Invalid ID.")
 
 
 async def remind_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
