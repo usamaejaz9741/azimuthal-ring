@@ -206,11 +206,21 @@ async def search_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     res_text = await update.message.reply_text(f"🔍 Searching for: {query}...")
     
     results = quick_search(query)
+    
+    # If no results were found, inform the user directly and skip LLM
+    if results.startswith("No results found") or results.startswith("Web search is currently"):
+        return await context.bot.edit_message_text(
+            f"❌ *{query}*: {results}",
+            chat_id=update.effective_chat.id,
+            message_id=res_text.message_id,
+            parse_mode='Markdown'
+        )
+
     # Use LLM to summarize results
     summary = llm_service.summarize(results)
     
     await context.bot.edit_message_text(
-        f"🌐 Web Summary for *{query}*:\n\n{summary}\n\n_Source summary using local AI_",
+        f"🐱 *Choji's Summary* for *{query}*:\n\n{summary}\n\n_Analyzed locally by your buddy Choji_",
         chat_id=update.effective_chat.id,
         message_id=res_text.message_id,
         parse_mode='Markdown'
@@ -259,6 +269,29 @@ async def list_memories(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 @restricted
+async def forget_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Handle the /forget command.
+
+    Deletes a specific user fact from the memory database.
+
+    Args:
+        update (Update): The update object containing information about the incoming message.
+        context (ContextTypes.DEFAULT_TYPE): The context object for the handler.
+
+    Returns:
+        None
+    """
+    if not context.args:
+        return await update.message.reply_text("Usage: /forget <key>")
+    key = context.args[0]
+    success = database.delete_memory(key)
+    if success:
+        await update.message.reply_text(f"🗑 Memory deleted: {key}")
+    else:
+        await update.message.reply_text(f"❌ Key '{key}' not found in memory.")
+
+
+@restricted
 async def chat_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Handle general text messages for AI chat.
 
@@ -271,11 +304,18 @@ async def chat_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     Returns:
         None
     """
-    # Pass to LLM
+    # Pass to LLM with memory context
     text = update.message.text
     if text:
-        # Check if the text is short enough to be a task without command 
-        # (optional deterministic logic)
         await context.bot.send_chat_action(chat_id=update.effective_chat.id, action=ChatAction.TYPING)
-        response = llm_service.generate(text)
+        
+        # 1. Fetch memories from DB
+        memories = database.get_memory()
+        memory_str = ""
+        if memories:
+            memory_list = [f"{m['key']}: {m['value']}" for m in memories]
+            memory_str = "USER INFORMATION:\n" + "\n".join(memory_list)
+        
+        # 2. Pass to LLM with context
+        response = llm_service.generate(text, context=memory_str)
         await update.message.reply_text(response)

@@ -173,3 +173,20 @@ def get_memory():
     memories = conn.execute("SELECT * FROM memory").fetchall()
     conn.close()
     return memories
+
+
+def delete_memory(key: str):
+    """Permanently delete a specific memory key from the database.
+
+    Args:
+        key (str): The unique key of the memory to be deleted.
+
+    Returns:
+        bool: True if a memory was deleted, False otherwise.
+    """
+    conn = get_db()
+    cursor = conn.execute("DELETE FROM memory WHERE key = ?", (key,))
+    deleted = cursor.rowcount > 0
+    conn.commit()
+    conn.close()
+    return deleted

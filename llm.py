@@ -55,7 +55,7 @@ class TinyLLM:
         try:
             self.model = Llama(
                 model_path=MODEL_PATH,
-                n_ctx=768,       # Increased slightly for summaries
+                n_ctx=1024,      # Increased for better reasoning/math
                 n_threads=max(1, os.cpu_count() - 1), 
                 verbose=False,
                 n_gpu_layers=0    # Force CPU to save RAM
@@ -84,13 +84,14 @@ class TinyLLM:
         return sanitized
 
 
-    def generate(self, prompt: str, system_prompt: str = None):
+    def generate(self, prompt: str, system_prompt: str = None, context: str = None):
         """Generate a response from the LLM based on a prompt.
 
         Args:
             prompt (str): The user's input prompt.
             system_prompt (str, optional): An optional system prompt to guide the AI's behavior.
                 Defaults to a concise assistant prompt.
+            context (str, optional): Additional contextual information (e.g., user memories).
 
         Returns:
             str: The generated text response or an error message.
@@ -103,14 +104,18 @@ class TinyLLM:
         if system_prompt:
             system_prompt = self._sanitize_input(system_prompt)
         else:
-            system_prompt = "You are a concise local assistant. Respond in under 30 words."
+            system_prompt = "You are Choji, a friendly local AI assistant. Be helpful, clear, and complete in your answers. For math or logic, show your steps."
 
-        full_prompt = f"<|im_start|>system\n{system_prompt}<|im_end|>\n<|im_start|>user\n{prompt}<|im_end|>\n<|im_start|>assistant\n"
+        if context:
+            context = self._sanitize_input(context)
+            full_prompt = f"<|im_start|>system\n{system_prompt}\n\nRELEVANT USER FACTS:\n{context}<|im_end|>\n<|im_start|>user\n{prompt}<|im_end|>\n<|im_start|>assistant\n"
+        else:
+            full_prompt = f"<|im_start|>system\n{system_prompt}<|im_end|>\n<|im_start|>user\n{prompt}<|im_end|>\n<|im_start|>assistant\n"
         
         try:
             output = self.model(
                 full_prompt,
-                max_tokens=120,
+                max_tokens=400,   # Increased for math/steps
                 stop=["<|im_end|>"],
                 echo=False
             )
@@ -129,8 +134,9 @@ class TinyLLM:
         Returns:
             str: A brief summary of the input text.
         """
-        prompt = f"Summarize this briefly: {text}"
-        return self.generate(prompt, "You are a summarization tool. Be extremely brief.")
+        # A more balanced and helpful prompt
+        prompt = f"Helpfully summarize the following search results. Be sure to include actual facts, figures, and specific details. Here are the search results:\n\n{text}"
+        return self.generate(prompt, "You are an informative AI assistant. Your goal is to provide a complete, factual, and helpful answer based on search data. Be thorough.")
 
 
 llm_service = TinyLLM()

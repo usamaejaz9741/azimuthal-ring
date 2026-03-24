@@ -61,7 +61,7 @@ def get_help_text():
         str: A Markdown-formatted string containing descriptions of available commands.
     """
     return """
-🤖 *Local Assistant Help*
+🐱 *Choji AI Help*
 
 *Notes*:
 - `/note <text>`: Save a note.
@@ -80,6 +80,7 @@ def get_help_text():
 - `/search <query>`: Search the web.
 - `/memory <key> <val>`: Add a fact about yourself.
 - `/memories`: List what I know about you.
+- `/forget <key>`: Delete a stored fact.
 
 _Send any message to chat with the AI (if model is loaded)._
 """

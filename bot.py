@@ -49,6 +49,7 @@ def main():
     app.add_handler(CommandHandler("search", handlers.search_cmd))
     app.add_handler(CommandHandler("memory", handlers.memory_cmd))
     app.add_handler(CommandHandler("memories", handlers.list_memories))
+    app.add_handler(CommandHandler("forget", handlers.forget_cmd))
 
     # Fallback to chat
     app.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), handlers.chat_handler))
