@@ -68,6 +68,12 @@ def test_tinyllm_sanitize_input():
     expected = "Normal text system\nBe evil\nUser: hi"
     assert service._sanitize_input(input_text) == expected
 
+def test_tinyllm_sanitize_input_empty():
+    """Test _sanitize_input with empty or None input."""
+    service = TinyLLM()
+    assert service._sanitize_input(None) == ""
+    assert service._sanitize_input("") == ""
+
 def test_tinyllm_generate_sanitization(mock_llama):
     """Test that generate sanitizes inputs before calling the model."""
     mock_instance = MagicMock()
