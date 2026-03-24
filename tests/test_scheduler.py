@@ -46,6 +46,14 @@ async def test_init_scheduler(reset_scheduler_state):
     reset_scheduler_state.start.assert_called_once()
 
 @pytest.mark.asyncio
+async def test_init_scheduler_no_loop(reset_scheduler_state):
+    """Test init_scheduler when no event loop is running."""
+    mock_bot = MagicMock()
+    with patch('asyncio.get_running_loop', side_effect=RuntimeError("No loop")):
+        init_scheduler(mock_bot)
+        assert scheduler._loop is None
+
+@pytest.mark.asyncio
 async def test_schedule_reminder(reset_scheduler_state):
     """Test the schedule_reminder function.
 
@@ -65,6 +73,15 @@ async def test_schedule_reminder(reset_scheduler_state):
     assert args[0] == trigger_reminder
     assert args[1] == 'date'
     assert kwargs['args'] == [12345, "Remind me"]
+
+@pytest.mark.asyncio
+async def test_schedule_reminder_no_loop(reset_scheduler_state):
+    """Test schedule_reminder when no event loop is running."""
+    mock_app = MagicMock()
+    mock_app.bot = MagicMock()
+    with patch('asyncio.get_running_loop', side_effect=RuntimeError("No loop")):
+        schedule_reminder(mock_app, 12345, "Remind me", 60)
+        assert scheduler._loop is None
 
 def test_start_stop_scheduler(reset_scheduler_state):
     """Test start_scheduler and stop_scheduler functions.
@@ -100,3 +117,12 @@ def test_trigger_reminder_success():
         # The second is the loop
         args, kwargs = mock_run_threadsafe.call_args
         assert args[1] == mock_loop
+
+def test_trigger_reminder_no_loop():
+    """Test trigger_reminder when the event loop is not initialized."""
+    mock_bot = MagicMock()
+    scheduler._bot_instance = mock_bot
+    scheduler._loop = None
+    with patch('builtins.print') as mock_print:
+        trigger_reminder(12345, "msg")
+        mock_print.assert_called_with("Error: Event loop not initialized in scheduler.")
