@@ -22,6 +22,8 @@ def mock_update():
     update.message.reply_text = AsyncMock()
     update.effective_chat = MagicMock(spec=Chat)
     update.effective_chat.id = 12345
+    update.effective_user = MagicMock(spec=User)
+    update.effective_user.id = 12345
     update.message.text = "test message"
     update.message.message_id = 1
     return update

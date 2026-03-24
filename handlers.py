@@ -11,9 +11,10 @@ import database
 from llm import llm_service
 from scheduler import schedule_reminder
 from search import quick_search
-from utils import get_help_text
+from utils import get_help_text, restricted
 
 
+@restricted
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Handle the /start and /help commands.
 
@@ -26,6 +27,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(get_help_text(), parse_mode='Markdown')
 
 
+@restricted
 async def note_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Handle the /note command.
 
@@ -42,6 +44,7 @@ async def note_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("📝 Note saved.")
 
 
+@restricted
 async def list_notes(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Handle the /notes command.
 
@@ -58,6 +61,7 @@ async def list_notes(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(f"Recent Notes:\n{msg}")
 
 
+@restricted
 async def task_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Handle the /task command.
 
@@ -74,6 +78,7 @@ async def task_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("🗓 Task added.")
 
 
+@restricted
 async def list_tasks(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Handle the /tasks command.
 
@@ -90,6 +95,7 @@ async def list_tasks(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(f"Your Pending Tasks:\n{msg}")
 
 
+@restricted
 async def complete_task_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Handle the /done command.
 
@@ -111,6 +117,7 @@ async def complete_task_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("❌ Invalid ID.")
 
 
+@restricted
 async def delete_task_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Handle the /delete command.
 
@@ -132,6 +139,7 @@ async def delete_task_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("❌ Invalid ID.")
 
 
+@restricted
 async def remind_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Handle the /remind command.
 
@@ -153,6 +161,7 @@ async def remind_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("❌ Minutes must be an integer.")
 
 
+@restricted
 async def search_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Handle the /search command.
 
@@ -180,6 +189,7 @@ async def search_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 
+@restricted
 async def memory_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Handle the /memory command.
 
@@ -197,6 +207,7 @@ async def memory_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(f"🧠 Memory updated: {key} = {val}")
 
 
+@restricted
 async def list_memories(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Handle the /memories command.
 
@@ -213,6 +224,7 @@ async def list_memories(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(f"Knowledge I have about you:\n{msg}")
 
 
+@restricted
 async def chat_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Handle general text messages for AI chat.
 

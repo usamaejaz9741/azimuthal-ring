@@ -5,6 +5,28 @@ common text responses like the help message.
 """
 
 import datetime
+import functools
+import logging
+import config
+
+
+def restricted(func):
+    """Decorator to restrict access to a specific user ID.
+
+    This decorator checks if the incoming update's effective user ID matches
+    the AUTHORIZED_USER_ID defined in the configuration. If they don't match,
+    it logs the attempt and returns. If AUTHORIZED_USER_ID is not set,
+    it allows all access.
+    """
+    @functools.wraps(func)
+    async def wrapped(update, context, *args, **kwargs):
+        user_id = update.effective_user.id
+        if config.AUTHORIZED_USER_ID is not None and user_id != config.AUTHORIZED_USER_ID:
+            logging.warning(f"Unauthorized access attempt by user {user_id}")
+            # Silently ignore unauthorized users for a personal bot to avoid bot spam/discovery
+            return
+        return await func(update, context, *args, **kwargs)
+    return wrapped
 
 
 def format_time(ts_string: str):
