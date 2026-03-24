@@ -1,8 +1,19 @@
+"""Tests for the bot.py module.
+
+This module contains unit tests for the main entry point of the bot application.
+"""
+
 import pytest
 from unittest.mock import patch, MagicMock
 import bot
 
+
 def test_main():
+    """Test the main function to ensure it initializes all components correctly.
+
+    This test mocks database initialization, application building, scheduler
+    initialization, and the polling loop to verify they are all called once.
+    """
     # Mocking all external calls to avoid starting a real bot
     with patch('database.init_db') as mock_db:
         # Mocking ApplicationBuilder

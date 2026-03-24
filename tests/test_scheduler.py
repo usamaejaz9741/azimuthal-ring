@@ -1,11 +1,22 @@
+"""Tests for the scheduler.py module.
+
+This module contains unit tests for background job scheduling and reminder functions.
+"""
+
 import pytest
 from unittest.mock import MagicMock, patch, AsyncMock
 import scheduler
 from scheduler import init_scheduler, schedule_reminder, start_scheduler, stop_scheduler, trigger_reminder, send_reminder_async
 from asyncio import AbstractEventLoop
 
+
 @pytest.fixture(autouse=True)
 def reset_scheduler_state():
+    """Fixture to reset the scheduler state and mock the scheduler instance.
+
+    Yields:
+        MagicMock: A mocked APScheduler instance.
+    """
     scheduler._bot_instance = None
     # Mock the actual scheduler instance in the module
     with patch('scheduler.scheduler') as mock_sched:
@@ -14,17 +25,28 @@ def reset_scheduler_state():
 
 @pytest.mark.asyncio
 async def test_send_reminder_async():
+    """Test the asynchronous send_reminder_async function."""
     mock_bot = AsyncMock()
     await send_reminder_async(mock_bot, 12345, "Test msg")
     mock_bot.send_message.assert_called_with(chat_id=12345, text="🔔 REMINDER: Test msg")
 
 def test_init_scheduler(reset_scheduler_state):
+    """Test the init_scheduler function.
+
+    Args:
+        reset_scheduler_state: Mocked scheduler fixture.
+    """
     mock_bot = MagicMock()
     init_scheduler(mock_bot)
     assert scheduler._bot_instance == mock_bot
     reset_scheduler_state.start.assert_called_once()
 
 def test_schedule_reminder(reset_scheduler_state):
+    """Test the schedule_reminder function.
+
+    Args:
+        reset_scheduler_state: Mocked scheduler fixture.
+    """
     mock_app = MagicMock()
     mock_app.bot = MagicMock()
 
@@ -39,6 +61,11 @@ def test_schedule_reminder(reset_scheduler_state):
     assert kwargs['args'] == [12345, "Remind me"]
 
 def test_start_stop_scheduler(reset_scheduler_state):
+    """Test start_scheduler and stop_scheduler functions.
+
+    Args:
+        reset_scheduler_state: Mocked scheduler fixture.
+    """
     reset_scheduler_state.running = False
     start_scheduler()
     reset_scheduler_state.start.assert_called_once()
@@ -48,11 +75,13 @@ def test_start_stop_scheduler(reset_scheduler_state):
     reset_scheduler_state.shutdown.assert_called_once()
 
 def test_trigger_reminder_no_bot():
+    """Test trigger_reminder when the bot instance is not initialized."""
     with patch('builtins.print') as mock_print:
         trigger_reminder(12345, "msg")
         mock_print.assert_called_with("Error: Bot instance not initialized in scheduler.")
 
 def test_trigger_reminder_success():
+    """Test trigger_reminder when it successfully schedules a reminder."""
     mock_bot = MagicMock()
     scheduler._bot_instance = mock_bot
 

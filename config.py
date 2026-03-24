@@ -1,3 +1,9 @@
+"""Configuration module for the Local AI Telegram Assistant.
+
+This module loads environment variables and defines constants used throughout
+the application, such as API tokens, model paths, and database URLs.
+"""
+
 import os
 from dotenv import load_dotenv
 
