@@ -14,6 +14,9 @@ from telegram.ext import Application, ContextTypes
 def mock_update():
     """Create a mocked Telegram Update object.
 
+    Args:
+        None
+
     Returns:
         MagicMock: A mocked Update object with pre-configured message and chat attributes.
     """
@@ -31,6 +34,9 @@ def mock_update():
 @pytest.fixture
 def mock_context():
     """Create a mocked Telegram Context object.
+
+    Args:
+        None
 
     Returns:
         MagicMock: A mocked Context object with pre-configured args, application, and bot attributes.

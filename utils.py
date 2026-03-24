@@ -17,6 +17,12 @@ def restricted(func):
     the AUTHORIZED_USER_ID defined in the configuration. If they don't match,
     it logs the attempt and returns. If AUTHORIZED_USER_ID is not set,
     it allows all access.
+
+    Args:
+        func (Callable): The function to be decorated.
+
+    Returns:
+        Callable: The wrapped function.
     """
     @functools.wraps(func)
     async def wrapped(update, context, *args, **kwargs):
@@ -47,6 +53,9 @@ def format_time(ts_string: str):
 
 def get_help_text():
     """Retrieve the help message text.
+
+    Args:
+        None
 
     Returns:
         str: A Markdown-formatted string containing descriptions of available commands.

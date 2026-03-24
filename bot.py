@@ -21,6 +21,12 @@ def main():
     3. Registers all command and message handlers.
     4. Initializes the background scheduler.
     5. Starts the bot in polling mode.
+
+    Args:
+        None
+
+    Returns:
+        None
     """
     # 1. Initialize DB
     print("Initializing Database...")

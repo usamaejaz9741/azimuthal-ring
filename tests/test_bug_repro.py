@@ -8,8 +8,13 @@ from unittest.mock import AsyncMock
 
 @pytest.mark.asyncio
 async def test_trigger_reminder_loop_fix():
-    """
-    Verify that trigger_reminder no longer raises RuntimeError when called from a thread.
+    """Verify that trigger_reminder no longer raises RuntimeError when called from a thread.
+
+    Args:
+        None
+
+    Returns:
+        None
     """
     # 1. Mock Bot
     bot = AsyncMock(spec=Bot)

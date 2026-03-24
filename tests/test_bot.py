@@ -13,6 +13,12 @@ def test_main():
 
     This test mocks database initialization, application building, scheduler
     initialization, and the polling loop to verify they are all called once.
+
+    Args:
+        None
+
+    Returns:
+        None
     """
     # Mocking all external calls to avoid starting a real bot
     with patch('database.init_db') as mock_db:

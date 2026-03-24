@@ -20,6 +20,9 @@ async def test_start(mock_update, mock_context):
     Args:
         mock_update: Mocked Telegram Update object.
         mock_context: Mocked Telegram Context object.
+
+    Returns:
+        None
     """
     await start(mock_update, mock_context)
     mock_update.message.reply_text.assert_called_once()
@@ -32,6 +35,9 @@ async def test_note_cmd_no_args(mock_update, mock_context):
     Args:
         mock_update: Mocked Telegram Update object.
         mock_context: Mocked Telegram Context object.
+
+    Returns:
+        None
     """
     mock_context.args = []
     await note_cmd(mock_update, mock_context)
@@ -44,6 +50,9 @@ async def test_note_cmd_success(mock_update, mock_context):
     Args:
         mock_update: Mocked Telegram Update object.
         mock_context: Mocked Telegram Context object.
+
+    Returns:
+        None
     """
     mock_context.args = ["Hello", "world"]
     with patch('database.add_note') as mock_add_note:
@@ -58,6 +67,9 @@ async def test_list_notes_empty(mock_update, mock_context):
     Args:
         mock_update: Mocked Telegram Update object.
         mock_context: Mocked Telegram Context object.
+
+    Returns:
+        None
     """
     with patch('database.get_notes', return_value=[]):
         await list_notes(mock_update, mock_context)
@@ -70,6 +82,9 @@ async def test_list_notes_with_data(mock_update, mock_context):
     Args:
         mock_update: Mocked Telegram Update object.
         mock_context: Mocked Telegram Context object.
+
+    Returns:
+        None
     """
     with patch('database.get_notes', return_value=[{'content': 'note 1'}]):
         await list_notes(mock_update, mock_context)
@@ -83,6 +98,9 @@ async def test_task_cmd_no_args(mock_update, mock_context):
     Args:
         mock_update: Mocked Telegram Update object.
         mock_context: Mocked Telegram Context object.
+
+    Returns:
+        None
     """
     mock_context.args = []
     await task_cmd(mock_update, mock_context)
@@ -95,6 +113,9 @@ async def test_task_cmd_success(mock_update, mock_context):
     Args:
         mock_update: Mocked Telegram Update object.
         mock_context: Mocked Telegram Context object.
+
+    Returns:
+        None
     """
     mock_context.args = ["Task 1"]
     with patch('database.add_task') as mock_add_task:
@@ -109,6 +130,9 @@ async def test_list_tasks_empty(mock_update, mock_context):
     Args:
         mock_update: Mocked Telegram Update object.
         mock_context: Mocked Telegram Context object.
+
+    Returns:
+        None
     """
     with patch('database.get_tasks', return_value=[]):
         await list_tasks(mock_update, mock_context)
@@ -121,6 +145,9 @@ async def test_list_tasks_with_data(mock_update, mock_context):
     Args:
         mock_update: Mocked Telegram Update object.
         mock_context: Mocked Telegram Context object.
+
+    Returns:
+        None
     """
     with patch('database.get_tasks', return_value=[{'id': 1, 'text': 'task 1', 'created_at': '2023-01-01 10:00:00'}]):
         await list_tasks(mock_update, mock_context)
@@ -133,6 +160,9 @@ async def test_complete_task_cmd_no_args(mock_update, mock_context):
     Args:
         mock_update: Mocked Telegram Update object.
         mock_context: Mocked Telegram Context object.
+
+    Returns:
+        None
     """
     mock_context.args = []
     await complete_task_cmd(mock_update, mock_context)
@@ -145,6 +175,9 @@ async def test_complete_task_cmd_success(mock_update, mock_context):
     Args:
         mock_update: Mocked Telegram Update object.
         mock_context: Mocked Telegram Context object.
+
+    Returns:
+        None
     """
     mock_context.args = ["1"]
     with patch('database.complete_task', return_value=True) as mock_complete_task:
@@ -159,6 +192,9 @@ async def test_complete_task_cmd_not_found(mock_update, mock_context):
     Args:
         mock_update: Mocked Telegram Update object.
         mock_context: Mocked Telegram Context object.
+
+    Returns:
+        None
     """
     mock_context.args = ["999"]
     with patch('database.complete_task', return_value=False) as mock_complete_task:
@@ -173,6 +209,9 @@ async def test_complete_task_cmd_invalid(mock_update, mock_context):
     Args:
         mock_update: Mocked Telegram Update object.
         mock_context: Mocked Telegram Context object.
+
+    Returns:
+        None
     """
     mock_context.args = ["abc"]
     await complete_task_cmd(mock_update, mock_context)
@@ -185,6 +224,9 @@ async def test_delete_task_cmd_no_args(mock_update, mock_context):
     Args:
         mock_update: Mocked Telegram Update object.
         mock_context: Mocked Telegram Context object.
+
+    Returns:
+        None
     """
     mock_context.args = []
     await delete_task_cmd(mock_update, mock_context)
@@ -197,6 +239,9 @@ async def test_delete_task_cmd_success(mock_update, mock_context):
     Args:
         mock_update: Mocked Telegram Update object.
         mock_context: Mocked Telegram Context object.
+
+    Returns:
+        None
     """
     mock_context.args = ["1"]
     with patch('database.delete_task', return_value=True) as mock_delete_task:
@@ -211,6 +256,9 @@ async def test_delete_task_cmd_not_found(mock_update, mock_context):
     Args:
         mock_update: Mocked Telegram Update object.
         mock_context: Mocked Telegram Context object.
+
+    Returns:
+        None
     """
     mock_context.args = ["999"]
     with patch('database.delete_task', return_value=False) as mock_delete_task:
@@ -225,6 +273,9 @@ async def test_delete_task_cmd_error(mock_update, mock_context):
     Args:
         mock_update: Mocked Telegram Update object.
         mock_context: Mocked Telegram Context object.
+
+    Returns:
+        None
     """
     mock_context.args = ["abc"]
     await delete_task_cmd(mock_update, mock_context)
@@ -237,6 +288,9 @@ async def test_remind_cmd_no_args(mock_update, mock_context):
     Args:
         mock_update: Mocked Telegram Update object.
         mock_context: Mocked Telegram Context object.
+
+    Returns:
+        None
     """
     mock_context.args = []
     await remind_cmd(mock_update, mock_context)
@@ -249,6 +303,9 @@ async def test_remind_cmd_success(mock_update, mock_context):
     Args:
         mock_update: Mocked Telegram Update object.
         mock_context: Mocked Telegram Context object.
+
+    Returns:
+        None
     """
     mock_context.args = ["10", "Buy", "milk"]
     with patch('handlers.schedule_reminder') as mock_schedule:
@@ -263,6 +320,9 @@ async def test_remind_cmd_invalid_minutes(mock_update, mock_context):
     Args:
         mock_update: Mocked Telegram Update object.
         mock_context: Mocked Telegram Context object.
+
+    Returns:
+        None
     """
     mock_context.args = ["abc", "Buy", "milk"]
     await remind_cmd(mock_update, mock_context)
@@ -275,6 +335,9 @@ async def test_search_cmd_no_args(mock_update, mock_context):
     Args:
         mock_update: Mocked Telegram Update object.
         mock_context: Mocked Telegram Context object.
+
+    Returns:
+        None
     """
     mock_context.args = []
     await search_cmd(mock_update, mock_context)
@@ -287,6 +350,9 @@ async def test_search_cmd_success(mock_update, mock_context):
     Args:
         mock_update: Mocked Telegram Update object.
         mock_context: Mocked Telegram Context object.
+
+    Returns:
+        None
     """
     mock_context.args = ["python"]
     mock_res_text = MagicMock()
@@ -308,6 +374,9 @@ async def test_memory_cmd_no_args(mock_update, mock_context):
     Args:
         mock_update: Mocked Telegram Update object.
         mock_context: Mocked Telegram Context object.
+
+    Returns:
+        None
     """
     mock_context.args = ["key"]
     await memory_cmd(mock_update, mock_context)
@@ -320,6 +389,9 @@ async def test_memory_cmd_success(mock_update, mock_context):
     Args:
         mock_update: Mocked Telegram Update object.
         mock_context: Mocked Telegram Context object.
+
+    Returns:
+        None
     """
     mock_context.args = ["name", "Jules"]
     with patch('database.set_memory') as mock_set_memory:
@@ -334,6 +406,9 @@ async def test_list_memories_empty(mock_update, mock_context):
     Args:
         mock_update: Mocked Telegram Update object.
         mock_context: Mocked Telegram Context object.
+
+    Returns:
+        None
     """
     with patch('database.get_memory', return_value=[]):
         await list_memories(mock_update, mock_context)
@@ -346,6 +421,9 @@ async def test_list_memories_with_data(mock_update, mock_context):
     Args:
         mock_update: Mocked Telegram Update object.
         mock_context: Mocked Telegram Context object.
+
+    Returns:
+        None
     """
     with patch('database.get_memory', return_value=[{'key': 'name', 'value': 'Jules'}]):
         await list_memories(mock_update, mock_context)
@@ -358,6 +436,9 @@ async def test_chat_handler(mock_update, mock_context):
     Args:
         mock_update: Mocked Telegram Update object.
         mock_context: Mocked Telegram Context object.
+
+    Returns:
+        None
     """
     mock_update.message.text = "Hello AI"
     with patch('handlers.llm_service.generate', return_value="AI Response") as mock_gen:
@@ -376,6 +457,9 @@ async def test_chat_handler_no_text(mock_update, mock_context):
     Args:
         mock_update: Mocked Telegram Update object.
         mock_context: Mocked Telegram Context object.
+
+    Returns:
+        None
     """
     mock_update.message.text = None
     await chat_handler(mock_update, mock_context)

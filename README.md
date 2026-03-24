@@ -27,11 +27,13 @@ A brutally practical, lightweight, and local-first personal assistant. This bot 
    ```bash
    cp .env.example .env
    ```
-2. Open `.env` and add your Telegram Bot Token:
-   ```env
-   TELEGRAM_TOKEN=your_token_here
-   ```
-3. (Optional) Adjust other settings like `TIMEZONE` or `MODEL_PATH`.
+2. Open `.env` and configure the following variables:
+   - `TELEGRAM_TOKEN`: **(Required)** Your Telegram Bot Token from @BotFather.
+   - `AUTHORIZED_USER_ID`: **(Highly Recommended)** Your Telegram User ID (get it from @userinfobot) to restrict the bot to your use only. If left empty, anyone can use the bot.
+   - `MODEL_PATH`: Path to your GGUF model file (default: `models/qwen2.5-0.5b-instruct-q4_k_m.gguf`).
+   - `DATABASE_URL`: SQLite database connection string (default: `sqlite:///assistant.db`).
+   - `TIMEZONE`: Your local timezone (default: `UTC`).
+   - `LOG_LEVEL`: Logging verbosity (default: `INFO`).
 
 ### 4. Prepare the AI Model
 1. Create a directory named `models` in the project root.
@@ -72,17 +74,53 @@ The project is structured for simplicity and modularity:
 
 ## 🛠️ Developer Guide
 
-### Running Tests
-The project uses `pytest` for testing. To run the full suite and see coverage:
-```bash
-pytest --cov=.
+### Code Style and Documentation
+This project adheres to the **Google Style Python Docstrings**. Every public function, method, and class must have a complete docstring that describes:
+- The purpose or main action of the code.
+- Descriptions for every parameter/argument.
+- Descriptions for the return value.
+
+Example:
+```python
+def add_note(content: str):
+    """Add a new note to the database.
+
+    Args:
+        content (str): The text content of the note to be added.
+
+    Returns:
+        None
+    """
+    # ... implementation ...
 ```
+
+### Running Tests
+The project uses `pytest` for testing, along with `pytest-asyncio` for asynchronous handlers and `pytest-cov` for coverage reports.
+
+To run the full suite:
+```bash
+python -m pytest
+```
+
+To run with coverage:
+```bash
+python -m pytest --cov=. --cov-report=term-missing
+```
+
+### Project Structure
+- `bot.py`: Main entry point. Wires Telegram handlers and starts polling.
+- `handlers.py`: Asynchronous command and message handlers.
+- `database.py`: SQLite abstraction layer for notes, tasks, and memory.
+- `llm.py`: Singleton service for local AI inference using `llama-cpp-python`.
+- `scheduler.py`: Background job management for persistent reminders.
+- `search.py`: Web search integration via DuckDuckGo.
+- `utils.py`: Shared utilities and security decorators.
 
 ### Contributing
 1. Fork the repository.
 2. Create a new branch for your feature or bugfix.
-3. Ensure all public functions and classes have Google-style docstrings.
-4. Run tests to make sure everything is working as expected.
+3. **Ensure full docstring coverage** following the project's documentation standards.
+4. Run tests to ensure no regressions and verify functionality.
 5. Submit a pull request!
 
 ## 📜 Technical Choices
