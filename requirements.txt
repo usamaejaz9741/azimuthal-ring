@@ -1,0 +1,7 @@
+python-telegram-bot
+llama-cpp-python
+apscheduler
+duckduckgo_search
+python-dotenv
+sqlalchemy
+sqlite3

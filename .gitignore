@@ -1,0 +1,22 @@
+# Secrets
+.env
+
+# Database
+*.db
+*.sqlite
+
+# Models
+models/
+*.gguf
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+.env
+
+# OS
+.DS_Store
+Thumbs.db
