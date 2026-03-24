@@ -18,3 +18,9 @@ CREATE TABLE IF NOT EXISTS memory (
     key TEXT PRIMARY KEY,
     value TEXT NOT NULL
 );
+
+-- Optimization: Index on notes(created_at) for faster sorting
+CREATE INDEX IF NOT EXISTS idx_notes_created_at ON notes(created_at DESC);
+
+-- Optimization: Index on tasks(status) for faster filtering
+CREATE INDEX IF NOT EXISTS idx_tasks_status ON tasks(status);

@@ -11,13 +11,17 @@ from config import DB_PATH
 
 
 def get_db():
-    """Establish a connection to the SQLite database.
+    """Establish a connection to the SQLite database with WAL and synchronous tuning.
 
     Returns:
         sqlite3.Connection: A SQLite connection object with Row factory set.
     """
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
+    # Optimization: Enable WAL mode for better concurrency and write speed
+    conn.execute("PRAGMA journal_mode=WAL")
+    # Optimization: Use NORMAL synchronous mode to speed up writes
+    conn.execute("PRAGMA synchronous=NORMAL")
     return conn
 
 

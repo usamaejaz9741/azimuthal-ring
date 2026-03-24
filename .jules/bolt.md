@@ -1,0 +1,3 @@
+## 2025-05-14 - [SQLite PRAGMA overhead in get_db]
+**Learning:** Setting SQLite PRAGMAs (like `PRAGMA journal_mode=WAL` and `PRAGMA synchronous=NORMAL`) on every connection via `get_db()` can introduce measurable overhead that may exceed the optimization gains for very small, single-threaded workloads. In this specific architecture where a new connection is opened/closed for every single query, the cumulative cost of these extra round-trips to the SQLite engine is visible in micro-benchmarks.
+**Action:** For performance-critical apps with high connection churn, apply persistent PRAGMAs once during database initialization or use a connection pool to minimize the per-operation configuration overhead.
