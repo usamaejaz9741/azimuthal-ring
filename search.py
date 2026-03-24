@@ -1,8 +1,22 @@
+"""Web search module for the Local AI Telegram Assistant.
+
+This module provides functionality to perform quick web searches using
+the DuckDuckGo Search API and return snippets of the results.
+"""
+
 from duckduckgo_search import DDGS
 
+
 def quick_search(query: str, max_results: int = 3):
-    """
-    Returns a small snippet of search results.
+    """Perform a web search and return a summary of snippets.
+
+    Args:
+        query (str): The search query string.
+        max_results (int, optional): The maximum number of search results to retrieve.
+            Defaults to 3.
+
+    Returns:
+        str: A concatenated string of search result snippets or a status message.
     """
     try:
         results = []

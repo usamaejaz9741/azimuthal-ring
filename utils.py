@@ -1,13 +1,34 @@
+"""Utility module for the Local AI Telegram Assistant.
+
+This module provides helper functions for formatting data and generating
+common text responses like the help message.
+"""
+
 import datetime
 
+
 def format_time(ts_string: str):
+    """Format an ISO timestamp string into a more readable format.
+
+    Args:
+        ts_string (str): The ISO format timestamp string.
+
+    Returns:
+        str: The formatted date string (YYYY-MM-DD HH:MM) or the original string if parsing fails.
+    """
     try:
         dt = datetime.datetime.fromisoformat(ts_string)
         return dt.strftime("%Y-%m-%d %H:%M")
     except:
         return ts_string
 
+
 def get_help_text():
+    """Retrieve the help message text.
+
+    Returns:
+        str: A Markdown-formatted string containing descriptions of available commands.
+    """
     return """
 🤖 *Local Assistant Help*
 

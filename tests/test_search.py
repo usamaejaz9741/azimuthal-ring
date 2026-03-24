@@ -1,8 +1,15 @@
+"""Tests for the search.py module.
+
+This module contains unit tests for the web search functionality.
+"""
+
 import pytest
 from unittest.mock import MagicMock, patch
 from search import quick_search
 
+
 def test_quick_search_success():
+    """Test quick_search when it successfully retrieves results."""
     with patch('search.DDGS') as mock_ddgs:
         mock_instance = MagicMock()
         mock_ddgs.return_value.__enter__.return_value = mock_instance
@@ -16,6 +23,7 @@ def test_quick_search_success():
         assert "Title 2: Body 2" in result
 
 def test_quick_search_no_results():
+    """Test quick_search when no results are found."""
     with patch('search.DDGS') as mock_ddgs:
         mock_instance = MagicMock()
         mock_ddgs.return_value.__enter__.return_value = mock_instance
@@ -25,6 +33,7 @@ def test_quick_search_no_results():
         assert result == "No results found."
 
 def test_quick_search_error():
+    """Test quick_search when an error occurs during the search."""
     with patch('search.DDGS') as mock_ddgs:
         mock_instance = MagicMock()
         mock_ddgs.return_value.__enter__.side_effect = Exception("Search API error")

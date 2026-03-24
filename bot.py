@@ -1,10 +1,27 @@
+"""Main entry point for the Local AI Telegram Assistant.
+
+This module initializes the database, builds the Telegram application,
+registers command and message handlers, and starts the background scheduler
+and the bot's polling loop.
+"""
+
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters
 from config import TELEGRAM_TOKEN
 import database
 import handlers
 import scheduler
 
+
 def main():
+    """Main function to initialize and run the Telegram bot.
+
+    This function performs the following steps:
+    1. Initializes the SQLite database.
+    2. Builds the Telegram application using the provided token.
+    3. Registers all command and message handlers.
+    4. Initializes the background scheduler.
+    5. Starts the bot in polling mode.
+    """
     # 1. Initialize DB
     print("Initializing Database...")
     database.init_db()

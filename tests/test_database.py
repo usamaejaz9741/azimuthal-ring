@@ -1,3 +1,9 @@
+"""Tests for the database.py module.
+
+This module contains unit tests for database helper functions, including
+note, task, and memory operations.
+"""
+
 import pytest
 import os
 import sqlite3
@@ -6,8 +12,17 @@ from database import init_db, add_note, get_notes, add_task, get_tasks, complete
 import database
 import config
 
+
 @pytest.fixture
 def test_db(tmp_path):
+    """Fixture to set up a temporary SQLite database for testing.
+
+    Args:
+        tmp_path (pathlib.Path): A temporary directory path provided by pytest.
+
+    Yields:
+        str: The path to the temporary database file.
+    """
     db_file = tmp_path / "test_assistant.db"
     # Overwrite DB_PATH in BOTH config and database modules
     original_path = config.DB_PATH
@@ -24,6 +39,11 @@ def test_db(tmp_path):
     database.DB_PATH = original_path
 
 def test_notes(test_db):
+    """Test note-related database functions (add_note and get_notes).
+
+    Args:
+        test_db (str): The path to the temporary test database.
+    """
     add_note("Test note 1")
     time.sleep(1.1)
     add_note("Test note 2")
@@ -33,6 +53,11 @@ def test_notes(test_db):
     assert notes[1]['content'] == "Test note 1"
 
 def test_tasks(test_db):
+    """Test task-related database functions (add_task, get_tasks, complete_task, delete_task).
+
+    Args:
+        test_db (str): The path to the temporary test database.
+    """
     add_task("Task 1")
     add_task("Task 2")
     tasks = get_tasks()
@@ -48,6 +73,11 @@ def test_tasks(test_db):
     assert len(get_tasks()) == 0
 
 def test_memory(test_db):
+    """Test memory-related database functions (set_memory and get_memory).
+
+    Args:
+        test_db (str): The path to the temporary test database.
+    """
     set_memory("name", "Jules")
     set_memory("city", "Paris")
     set_memory("name", "Julian") # Test REPLACE
