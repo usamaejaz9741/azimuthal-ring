@@ -4,4 +4,3 @@ apscheduler
 duckduckgo_search
 python-dotenv
 sqlalchemy
-sqlite3
