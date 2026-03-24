@@ -30,7 +30,11 @@ def main():
     # Fallback to chat
     app.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), handlers.chat_handler))
 
-    # 4. Run loop
+    # 4. Initialize Scheduler
+    print("Starting Scheduler...")
+    scheduler.init_scheduler(app.bot)
+
+    # 5. Run loop
     print("Running Local Assistant Polling loop...")
     app.run_polling()
 
