@@ -4,6 +4,7 @@ This module contains unit tests for background job scheduling and reminder funct
 """
 
 import pytest
+import asyncio
 from unittest.mock import MagicMock, patch, AsyncMock
 import scheduler
 from scheduler import init_scheduler, schedule_reminder, start_scheduler, stop_scheduler, trigger_reminder, send_reminder_async
@@ -18,6 +19,7 @@ def reset_scheduler_state():
         MagicMock: A mocked APScheduler instance.
     """
     scheduler._bot_instance = None
+    scheduler._loop = None
     # Mock the actual scheduler instance in the module
     with patch('scheduler.scheduler') as mock_sched:
         mock_sched.running = False
@@ -30,7 +32,8 @@ async def test_send_reminder_async():
     await send_reminder_async(mock_bot, 12345, "Test msg")
     mock_bot.send_message.assert_called_with(chat_id=12345, text="🔔 REMINDER: Test msg")
 
-def test_init_scheduler(reset_scheduler_state):
+@pytest.mark.asyncio
+async def test_init_scheduler(reset_scheduler_state):
     """Test the init_scheduler function.
 
     Args:
@@ -39,9 +42,11 @@ def test_init_scheduler(reset_scheduler_state):
     mock_bot = MagicMock()
     init_scheduler(mock_bot)
     assert scheduler._bot_instance == mock_bot
+    assert scheduler._loop == asyncio.get_running_loop()
     reset_scheduler_state.start.assert_called_once()
 
-def test_schedule_reminder(reset_scheduler_state):
+@pytest.mark.asyncio
+async def test_schedule_reminder(reset_scheduler_state):
     """Test the schedule_reminder function.
 
     Args:
@@ -53,6 +58,7 @@ def test_schedule_reminder(reset_scheduler_state):
     schedule_reminder(mock_app, 12345, "Remind me", 60)
 
     assert scheduler._bot_instance == mock_app.bot
+    assert scheduler._loop == asyncio.get_running_loop()
     reset_scheduler_state.add_job.assert_called_once()
     # It's called as scheduler.add_job(trigger_reminder, 'date', run_date=..., args=[...])
     args, kwargs = reset_scheduler_state.add_job.call_args
@@ -84,13 +90,13 @@ def test_trigger_reminder_success():
     """Test trigger_reminder when it successfully schedules a reminder."""
     mock_bot = MagicMock()
     scheduler._bot_instance = mock_bot
+    mock_loop = MagicMock()
+    scheduler._loop = mock_loop
 
-    # We need to mock asyncio completely to avoid event loop issues in tests
-    with patch('scheduler.asyncio.new_event_loop') as mock_new_loop:
-        mock_loop = MagicMock(spec=AbstractEventLoop)
-        mock_new_loop.return_value = mock_loop
-
-        with patch('scheduler.asyncio.set_event_loop'):
-            trigger_reminder(12345, "msg")
-            mock_loop.run_until_complete.assert_called_once()
-            mock_loop.close.assert_called_once()
+    with patch('scheduler.asyncio.run_coroutine_threadsafe') as mock_run_threadsafe:
+        trigger_reminder(12345, "msg")
+        mock_run_threadsafe.assert_called_once()
+        # The first argument is the coroutine (result of send_reminder_async)
+        # The second is the loop
+        args, kwargs = mock_run_threadsafe.call_args
+        assert args[1] == mock_loop

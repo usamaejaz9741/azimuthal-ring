@@ -20,6 +20,7 @@ scheduler = BackgroundScheduler(
 )
 
 _bot_instance = None
+_loop = None
 
 
 def init_scheduler(bot_instance):
@@ -28,8 +29,13 @@ def init_scheduler(bot_instance):
     Args:
         bot_instance: The python-telegram-bot instance used to send messages.
     """
-    global _bot_instance
+    global _bot_instance, _loop
     _bot_instance = bot_instance
+    try:
+        _loop = asyncio.get_running_loop()
+    except RuntimeError:
+        _loop = None
+
     if not scheduler.running:
         scheduler.start()
 
@@ -48,8 +54,8 @@ async def send_reminder_async(bot, chat_id, message):
 def trigger_reminder(chat_id, message):
     """Function called by the scheduler when a reminder's time is reached.
 
-    This function sets up a new event loop to run the asynchronous
-    send_reminder_async function.
+    This function uses asyncio.run_coroutine_threadsafe to execute the
+    asynchronous send_reminder_async function on the main event loop.
 
     Args:
         chat_id (int/str): The unique identifier for the target chat.
@@ -59,12 +65,14 @@ def trigger_reminder(chat_id, message):
         print("Error: Bot instance not initialized in scheduler.")
         return
 
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    try:
-        loop.run_until_complete(send_reminder_async(_bot_instance, chat_id, message))
-    finally:
-        loop.close()
+    if _loop is None:
+        print("Error: Event loop not initialized in scheduler.")
+        return
+
+    asyncio.run_coroutine_threadsafe(
+        send_reminder_async(_bot_instance, chat_id, message),
+        _loop
+    )
 
 
 def schedule_reminder(bot_app, chat_id, message, delay_seconds):
@@ -76,10 +84,15 @@ def schedule_reminder(bot_app, chat_id, message, delay_seconds):
         message (str): The reminder text.
         delay_seconds (int): The number of seconds to wait before triggering.
     """
-    # Ensure the bot instance is stored (for when it might not have been via init_scheduler)
-    global _bot_instance
+    # Ensure the bot instance and loop are stored (for when it might not have been via init_scheduler)
+    global _bot_instance, _loop
     if _bot_instance is None:
         _bot_instance = bot_app.bot
+    if _loop is None:
+        try:
+            _loop = asyncio.get_running_loop()
+        except RuntimeError:
+            _loop = None
 
     run_date = datetime.datetime.now() + datetime.timedelta(seconds=delay_seconds)
     
