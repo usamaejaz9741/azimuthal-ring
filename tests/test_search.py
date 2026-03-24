@@ -39,4 +39,4 @@ def test_quick_search_error():
         mock_ddgs.return_value.__enter__.side_effect = Exception("Search API error")
 
         result = quick_search("test query")
-        assert "Search failed: Search API error" in result
+        assert result == "Web search is currently unavailable. Please try again later."

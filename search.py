@@ -4,6 +4,7 @@ This module provides functionality to perform quick web searches using
 the DuckDuckGo Search API and return snippets of the results.
 """
 
+import logging
 from duckduckgo_search import DDGS
 
 
@@ -28,4 +29,5 @@ def quick_search(query: str, max_results: int = 3):
             return "No results found."
         return "\n\n".join(results)
     except Exception as e:
-        return f"Search failed: {e}"
+        logging.error(f"Web search failed for query '{query}': {e}", exc_info=True)
+        return "Web search is currently unavailable. Please try again later."
