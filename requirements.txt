@@ -4,3 +4,7 @@ apscheduler
 duckduckgo_search
 python-dotenv
 sqlalchemy
+pytest
+pytest-cov
+pytest-asyncio
+pytest-mock
