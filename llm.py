@@ -7,6 +7,7 @@ using a GGUF model.
 
 from llama_cpp import Llama
 import os
+import logging
 from config import MODEL_PATH
 
 
@@ -54,6 +55,25 @@ class TinyLLM:
             self.model = None
 
 
+    def _sanitize_input(self, text: str):
+        """Sanitize input by removing ChatML control tokens.
+
+        Args:
+            text (str): The input text to sanitize.
+
+        Returns:
+            str: The sanitized text.
+        """
+        if not text:
+            return ""
+        # Remove potential prompt injection tokens
+        tokens_to_remove = ["<|im_start|>", "<|im_end|>"]
+        sanitized = text
+        for token in tokens_to_remove:
+            sanitized = sanitized.replace(token, "")
+        return sanitized
+
+
     def generate(self, prompt: str, system_prompt: str = None):
         """Generate a response from the LLM based on a prompt.
 
@@ -68,7 +88,11 @@ class TinyLLM:
         if not self.model:
             return "Note: Local AI is disabled because the model file was not found."
 
-        if not system_prompt:
+        # Sanitize inputs to prevent prompt injection
+        prompt = self._sanitize_input(prompt)
+        if system_prompt:
+            system_prompt = self._sanitize_input(system_prompt)
+        else:
             system_prompt = "You are a concise local assistant. Respond in under 30 words."
 
         full_prompt = f"<|im_start|>system\n{system_prompt}<|im_end|>\n<|im_start|>user\n{prompt}<|im_end|>\n<|im_start|>assistant\n"
@@ -82,7 +106,8 @@ class TinyLLM:
             )
             return output['choices'][0]['text'].strip()
         except Exception as e:
-            return f"Error during inference: {e}"
+            logging.error(f"Error during LLM inference: {e}", exc_info=True)
+            return "An error occurred during AI processing. Please try again later."
 
 
     def summarize(self, text: str):
